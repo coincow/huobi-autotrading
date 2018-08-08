@@ -5,7 +5,7 @@ import logging
 # 日志配置文件
 from copy import deepcopy
 
-_filename = None
+_filename = 'logfile'
 _format = "%(asctime)-15s [%(levelname)s] [%(name)s] %(message)s"
 _datefmt = "%Y/%m/%d %H:%M:%S"
 _level = logging.INFO
@@ -26,8 +26,8 @@ PERIOD = "1min"
 N_MINUTES_STATE = 10
 
 # 当达到以下值，发出警报通知，触发下一步动作
-PRICE_ALERT_INCREASE_POINT = 1.25
-PRICE_ALERT_DECREASE_POINT = -1.25
+PRICE_ALERT_INCREASE_POINT = 1.1
+PRICE_ALERT_DECREASE_POINT = -1.1
 
 # 买入和卖出策略目前写死在代码里
 # 卖出策略 - 达到PRICE_ALERT_DECREASE_POINT时
@@ -101,6 +101,6 @@ DATABASE_SERVER_USERNAME = None
 DATABASE_SERVER_PASSWORD = None
 
 # 邮件通知，配置SMTP，获取其AuthCode即可发送邮件
-MAIL_ACCOUNT = None
-MAIL_AUTH_CODE = None
-MAIL_RECEIPIENTS = []
+MAIL_ACCOUNT = 'zhouyangzzu@gmail.com'
+MAIL_AUTH_CODE = 'qpbrajlmnzentnaj'
+MAIL_RECEIPIENTS = ['ashu000000@163.com']
