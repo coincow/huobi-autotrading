@@ -28,14 +28,14 @@ last_mail_datetime = None
 
 
 def get_usdt_sell_price():
-    conn = http.client.HTTPSConnection("api-otc.huobi.pro")
-    conn.request("GET", "/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=")
-    res = conn.getresponse()
-    try:
-        data = json.loads(res.read().decode("utf-8"))['data']
-        return statistics.mean(list(map(lambda x: x['price'], data)))
-    except Exception as exp:
-        logger.error("无法获得USDT交易卖出价：" + str(exp))
+    # conn = http.client.HTTPSConnection("api-otc.huobi.pro")
+    # conn.request("GET", "/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=")
+    # res = conn.getresponse()
+    # try:
+    #     data = json.loads(res.read().decode("utf-8"))['data']
+    #     return statistics.mean(list(map(lambda x: x['price'], data)))
+    # except Exception as exp:
+    #     logger.error("无法获得USDT交易卖出价：" + str(exp))exp
     return "失败"
 
 
