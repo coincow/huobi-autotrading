@@ -1,10 +1,7 @@
-import json
 import numpy
 import logging
 import time
 import datetime
-import http.client
-import statistics
 
 from app import settings
 from app.service import ma
@@ -60,8 +57,9 @@ def get_current_wealth():
     return total
 
 
-def trigger_price_increase_action(total_price_change):
-    content = "价格上升：%.4f" % total_price_change
+def trigger_price_increase_action(market, total_price_change):
+    content = 'market:'+market+'\r\n'
+    content += "价格上升：%.4f" % total_price_change
     logger.warning(content)
 
     # 60%购买当前平均10分钟内涨幅 * WEIGHT最高的, 40%购买第2高的
@@ -73,8 +71,9 @@ def trigger_price_increase_action(total_price_change):
     logger.info("总财富USDT: %.2f; 不折腾: %.2f; 时间: %s" % (get_current_wealth(), settings.ORIGINAL_WEALTH, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(transaction_dict['market.etcusdt.kline.1min'][-1]['ts'] / 1000))))
     send_mail("火币网价格上升", content)
 
-def trigger_price_decrease_action(total_price_change):
-    content = "价格下降：%.4f" % total_price_change
+def trigger_price_decrease_action(market, total_price_change):
+    content = 'market:' + market + '\r\n'
+    content += "价格下降：%.4f" % total_price_change
     logger.warning(content)
 
     # 查找当前价格涨幅最高的两个，如果我们已购买的货币在这里面，则不卖出
@@ -90,12 +89,12 @@ def trigger_price_decrease_action(total_price_change):
     logger.info("总财富USDT: %.2f; 不折腾: %.2f; 时间: %s" % (get_current_wealth(), settings.ORIGINAL_WEALTH, time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(transaction_dict['market.etcusdt.kline.1min'][-1]['ts'] / 1000))))
     send_mail("火币网价格下降", content)
 
-def predict_and_notify(total_price_change):
+def predict_and_notify(market, total_price_change):
     if total_price_change >= settings.PRICE_ALERT_INCREASE_POINT:
-        trigger_price_increase_action(total_price_change)
+        trigger_price_increase_action(market, total_price_change)
     if total_price_change <= settings.PRICE_ALERT_DECREASE_POINT:
-        trigger_price_decrease_action(total_price_change)
-    logger.info("价格变动：%.4f；USDT当前售价：%.2f" % (total_price_change, get_usdt_sell_price()))
+        trigger_price_decrease_action(market, total_price_change)
+    # logger.info("价格变动：%.4f；USDT当前售价：%.2f" % (total_price_change, get_usdt_sell_price()))
 
 
 def perform_calculation():
@@ -106,12 +105,15 @@ def perform_calculation():
         return
     # 取出price_change_dict中的所有数据，并根据settings中设置的WEIGHT决定是否购买
     for channel, price in price_change_dict.items():
+        market = channel.split(".")[1]
         currency = channel.split(".")[1].replace(settings.SYMBOL.lower(), "").upper()
         weight = settings.COINS[currency]["WEIGHT"]
         total_price += settings.COINS[currency].get("AMOUNT", 0) * transaction_dict[channel][-1]['tick']['close']
         total_price_change += price * weight
-    total_price_change /= sum(list(map(lambda x: x["WEIGHT"], settings.COINS.values())))
-    predict_and_notify(total_price_change)
+    tmp = sum(list(map(lambda x: x["WEIGHT"], settings.COINS.values())))
+    if 0 != tmp:
+        total_price_change /= tmp
+        predict_and_notify(market, total_price_change)
 
 
 # 火币的交易量相关信息每60秒重置一次
