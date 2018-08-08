@@ -103,4 +103,4 @@ DATABASE_SERVER_PASSWORD = None
 # 邮件通知，配置SMTP，获取其AuthCode即可发送邮件
 MAIL_ACCOUNT = 'zhouyangzzu@gmail.com'
 MAIL_AUTH_CODE = 'qpbrajlmnzentnaj'
-MAIL_RECEIPIENTS = ['ashu000000@163.com']
+MAIL_RECEIPIENTS = ['ashu000000@163.com', '107802740@qq.com']

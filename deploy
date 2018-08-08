@@ -1,6 +1,6 @@
 #!/bin/sh
-cd ~/PycharmProjects/huobi-autotrading
+cd ~/PycharmProjects/huobi-autotrading10
 scp -r ./app root@159.89.135.88:/root/auto
 scp ./requirements.txt root@159.89.135.88:/root/auto
-scp ./runMe root@159.89.135.88:/root/auto
+scp ./run root@159.89.135.88:/root/auto
 echo "upload done"
